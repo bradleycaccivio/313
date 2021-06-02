@@ -38,7 +38,7 @@ GPIO.setup(25, GPIO.IN)
 fsr = MCP3008(5)
 pot = MCP3008(0)
 
-o_s = sd.OutputStream(samplerate=44100, blocksize=8820, channels=2, dtype=np.float32)
+o_s = sd.OutputStream(samplerate=44100, blocksize=8820, channels=2, dtype='float32')
 
 def getfreq():
     if fsr.value <= 0.125:
