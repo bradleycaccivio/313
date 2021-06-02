@@ -46,7 +46,7 @@ def getharm():
         return "perf5"
     else:
         return "min6"
-
+"""
 while True:
     try:
         print(getharm())
@@ -55,7 +55,7 @@ while True:
         print('Cleaning...')
         GPIO.cleanup()
         sys.exit()
-"""
+
 _time = 0
 while _time < 1000:
     try:
