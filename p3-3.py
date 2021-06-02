@@ -77,13 +77,13 @@ def getharm():
     hx.power_down()
     if val <= 6000:
         return "same"
-    elif val <= 10000:
+    elif val <= 12000:
         return "min3"
-    elif val <= 14000:
-        return "maj3"
     elif val <= 18000:
+        return "maj3"
+    elif val <= 24000:
         return "tritone"
-    elif val <= 22000:
+    elif val <= 30000:
         return "perf5"
     else:
         return "min6"
