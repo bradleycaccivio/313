@@ -222,35 +222,35 @@ while True:
     #hx.power_down()
     if fsr.value <= 0.125:
         frequency = 261.63
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [0, 0, 3, 7]
     elif fsr.value <= 0.25:
         frequency = 293.66
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [4, 0, 7, 7]
     elif fsr.value <= 0.375:
         frequency = 329.63
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [8, 0, 11, 7]
     elif fsr.value <= 0.5:
         frequency = 349.23
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [12, 0, 15, 7]
     elif fsr.value <= 0.625:
         frequency = 392.00
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [16, 0, 19, 7]
     elif fsr.value <= 0.75:
         frequency = 440.00
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [20, 0, 23, 7]
     elif fsr.value <= 0.875:
         frequency = 493.88
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [24, 0, 27, 7]
     else:
         frequency = 523.25
-        frequency1 = getharm(frequency)
+        #frequency1 = getharm(frequency)
         block = [28, 0, 31, 7]
         
     if pot.value <= 0.125:
@@ -293,6 +293,7 @@ while True:
 
     t = np.linspace(0, seconds, seconds * fs, False)
 
+    """
     note = np.sin(frequency * t * 2 * np.pi)
     note1 = np.sin(frequency1 * t * 2 * np.pi)
 
@@ -305,10 +306,23 @@ while True:
         stereo_data = audio
     else:
         stereo_data = np.column_stack([audio, audio1])
+    """
     
     if not GPIO.input(25):
         device.contrast(p_c)
         #play_obj = sa.play_buffer(audio, 1, 2, fs)
+        frequency1 = getharm(frequency)
+        note = np.sin(frequency * t * 2 * np.pi)
+        audio = note * (2**15 - 1) / np.max(np.abs(note))
+        audio = audio.astype(np.int16)
+        if frequency != frequency1:
+            note1 = np.sin(frequency1 * t * 2 * np.pi)
+            audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
+            audio1 = audio1.astype(np.int16)
+            stereo_data = np.column_stack([audio, audio1])
+        else:
+            stereo_data = audio
+        note = np.sin(frequency * t * 2 * np.pi)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
         sd.play(stereo_data*weight, 44100)
