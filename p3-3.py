@@ -192,6 +192,7 @@ def readadc(adcnum):
 
 def getharm(f):
     val = hx.get_weight(1)
+    print(val)
     if val <= 0:
         return harmonics[f]["same"]
     elif val <= 2500:
