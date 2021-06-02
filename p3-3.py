@@ -51,7 +51,8 @@ def sine_tone(frequency, duration, volume=1, sample_rate=22050):
 pot = MCP3008(0)
 fsr = MCP3008(5)
 
-m = alsaaudio.Mixer()
+#m = alsaaudio.Mixer()
+weight = 1
 c_v = m.getvolume()
 print(c_v)
 
@@ -114,28 +115,36 @@ while True:
         block = [28, 0, 31, 7]
         
     if pot.value <= 0.125:
-        m.setvolume(12)
+        #m.setvolume(12)
+        weight = 0.2
         p_c = 1 * 16
     elif pot.value <= 0.25:
-        m.setvolume(25)
+        #m.setvolume(25)
+        weight = 0.45
         p_c = 3 * 16
     elif pot.value <= 0.375:
-        m.setvolume(38)
+        #m.setvolume(38)
+        weight = 0.7
         p_c = 5 * 16
     elif pot.value <= 0.5:
-        m.setvolume(50)
+        #m.setvolume(50)
+        weight = 0.95
         p_c = 7 * 16
     elif pot.value <= 0.625:
-        m.setvolume(63)
+        #m.setvolume(63)
+        weight = 1.2
         p_c = 9 * 16
     elif pot.value <= 0.75:
-        m.setvolume(75)
+        #m.setvolume(75)
+        weight = 1.45
         p_c = 11 * 16
     elif pot.value <= 0.875:
-        m.setvolume(88)
+        #m.setvolume(88)
+        weight = 1.70
         p_c = 13 * 16
     else:
-        m.setvolume(100)
+        #m.setvolume(100)
+        weight = 1.95
         p_c = 15 * 16
     fs = 44100
     seconds = 0.2
@@ -160,7 +169,7 @@ while True:
         #play_obj = sa.play_buffer(audio, 1, 2, fs)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
-        sd.play(stereo_data, 44100, mapping=[1,2])
+        sd.play(stereo_data*weight, 44100, mapping=[1,2], loop=True)
         sd.wait()
         #play_obj.wait_done()
     else:
