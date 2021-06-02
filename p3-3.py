@@ -40,7 +40,7 @@ def getfreq():
         block = [24, 0, 27, 3]
     else:
         frequency = 523.25
-        block = [28, 0, 31, 7]
+        block = [28, 0, 31, 3]
     return frequency, block
 
 def getvol():
