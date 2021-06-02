@@ -209,6 +209,7 @@ def getharm(f):
         return harmonics[f]["min6"]
 
 device.clear()
+hw.power_down()
 
 while True:
     #if not GPIO.input(25):
@@ -218,7 +219,7 @@ while True:
     #    device.contrast(14*16)
     #    print('no')
     #print(pot.value)
-    hx.power_down()
+    #hx.power_down()
     if fsr.value <= 0.125:
         frequency = 261.63
         frequency1 = getharm(frequency)
