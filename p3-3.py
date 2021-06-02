@@ -4,6 +4,7 @@ import spidev
 from gpiozero import MCP3008
 from time import sleep
 import math
+import sys
 
 from luma.led_matrix.device import max7219
 from luma.core.interface.serial import spi, noop
@@ -17,20 +18,7 @@ from hx711 import HX711
 
 print('starting')
 
-hx = HX711(5,6)
 
-hx.reset()
-hx.tare()
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(25, GPIO.IN)
-
-fsr = MCP3008(5)
-pot = MCP3008(0)
-
-o_s = sd.OutputStream(samplerate=44100, blocksize=8820, channels=2, dtype=np.float32)
-o_s.start()
 
 def getfreq():
     if fsr.value <= 0.125:
@@ -61,63 +49,46 @@ def getfreq():
 
 def getvol():
     if pot.value <= 0.125:
-        weight = 0.2
+        weight = 0.125
         p_c = 1 * 16
     elif pot.value <= 0.25:
-        weight = 0.45
+        weight = 0.25
         p_c = 3 * 16
     elif pot.value <= 0.375:
         weight = 0.7
         p_c = 5 * 16
     elif pot.value <= 0.5:
-        weight = 0.95
+        weight = 0.5
         p_c = 7 * 16
     elif pot.value <= 0.625:
-        weight = 1.2
+        weight = 0.625
         p_c = 9 * 16
     elif pot.value <= 0.75:
-        weight = 1.45
+        weight = 0.75
         p_c = 11 * 16
     elif pot.value <= 0.875:
-        weight = 1.70
+        weight = 0.875
         p_c = 13 * 16
     else:
-        weight = 1.95
+        weight = 1
         p_c = 15 * 16
     return weight, p_c
 
 def getharm():
     val = hx.get_weight(1)
     print(val)
-    if val <= 9000:
+    if val <= 12000:
         return "same"
-    elif val <= 18000:
+    elif val <= 24000:
         return "min3"
     elif val <= 36000:
         return "maj3"
-    elif val <= 45000:
+    elif val <= 48000:
         return "tritone"
-    elif val <= 56000:
+    elif val <= 60000:
         return "perf5"
     else:
         return "min6"
-"""
-def callback(outdata, frames, time, status):
-    if not GPIO.input(25):
-        seconds = 0.2
-        t = np.linspace(0, seconds, seconds * fs, False)
-        note = np.sin(frequency * t * 2 * np.pi)
-        audio = note * (2**15 - 1) / np.max(np.abs(note))
-        audio = audio.astype(np.float32)
-        frequency1 = harmonics[frequency][getharm()]
-        note1 = np.sin(frequency1 * t * 2 * np.pi)
-        audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
-        audio1 = audio1.astype(np.float32)
-        stereo_data = np.column_stack([audio, audio1])]
-        outdata[:] = stereo_data
-    else:
-        outdata.fill(0)
-"""
 
 """
 while True:
@@ -129,58 +100,7 @@ while True:
         GPIO.cleanup()
         sys.exit()
 
-_time = 0
-while _time < 1000:
-    try:
-        hx711 = HX711(
-                dout_pin=27,
-                pd_sck_pin=17,
-                channel='A',
-                gain=64
-        )
 
-        hx711.reset()
-        measures = hx711._read()
-
-    finally:
-        GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
-
-    print('hi')
-    print(measures)
-    _time = _time + 1
-
-
-p = pyaudio.PyAudio()
-volume = 0.5
-fs = 44100
-duration = 10.0
-f1 = 261.63
-f2 = 329.63
-
-samples1 = (np.sin(2*np.pi*np.arange(fs*duration)*f1/fs)).astype(np.float32)
-samples2 = (np.sin(2*np.pi*np.arange(fs*duration)*f2/fs)).astype(np.float32)
-
-assert samples1.ndim == samples2.ndim
-assert samples1.size == samples2.size
-s_d = np.column_stack([samples1, samples2])
-
-f_a = []
-
-for i,v in enumerate(samples1):
-    f_a.append(v)
-    f_a.append(samples2[i])
-
-f_a = np.array(f_a)
-
-stream = p.open(format=pyaudio.paFloat32,
-                channels=1,
-                rate=fs,
-                output=True)
-
-stream.write(volume*samples1)
-stream.stop_stream()
-stream.close()
-p.terminate()
 """
 harmonics = {
     261.63: {
@@ -248,56 +168,37 @@ harmonics = {
         "min6": 830.61      # 8 semi
     }}
 
-#m = alsaaudio.Mixer()
 weight = 1
-#c_v = m.getvolume()
-#print(c_v)
-
 p_c = 0
+fs = 44100
+seconds = 0.2
+t = np.linspace(0, seconds, seconds * fs, False)
+
+hx = HX711(5,6)
+
+hx.reset()
+hx.tare()
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(25, GPIO.IN)
+
+fsr = MCP3008(5)
+pot = MCP3008(0)
 
 serial = spi(port=0, device=0, gpio=noop())
 device = max7219(serial, cascaded=4, block_orientation=-90)
 
-def readadc(adcnum):
-    if adcnum > 7 or adcnum < 0:
-        return -1
-    r = spi_d.xfer2([1, 8 + adcnum << 4, 0])
-    data = ((r[1] & 3) << 8) + r[2]
-    return data
-
-device.clear()
+o_s = sd.OutputStream(samplerate=fs, blocksize=fs*seconds, channels=2, dtype=np.float32)
+o_s.start()
 
 while True:
     frequency, block = getfreq()
         
     weight, p_c = getvol()
     
-    fs = 44100
-    seconds = 0.2
-    #print(fsr.value)
-    #print(pot.value)
-    #print(m.getvolume())
-
-    t = np.linspace(0, seconds, seconds * fs, False)
-
-    """
-    note = np.sin(frequency * t * 2 * np.pi)
-    note1 = np.sin(frequency1 * t * 2 * np.pi)
-
-    audio = note * (2**15 - 1) / np.max(np.abs(note))
-    audio = audio.astype(np.int16)
-    audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
-    audio1 = audio1.astype(np.int16)
-
-    if frequency == frequency1:
-        stereo_data = audio
-    else:
-        stereo_data = np.column_stack([audio, audio1])
-    """
-    
     if not GPIO.input(25):
         device.contrast(p_c)
-        #play_obj = sa.play_buffer(audio, 1, 2, fs)
         frequency1 = harmonics[frequency][getharm()]
         note = np.sin(frequency * t * 2 * np.pi)
         audio = note * (2**15 - 1) / np.max(np.abs(note))
@@ -308,44 +209,17 @@ while True:
         stereo_data = np.column_stack([audio, audio1])
         print('yo')
         print(stereo_data.shape)
-        """
-        if frequency != frequency1:
-            note1 = np.sin(frequency1 * t * 2 * np.pi)
-            audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
-            audio1 = audio1.astype(np.float32)
-            stereo_data = np.column_stack([audio, audio1])
-        else:
-            stereo_data = audio
-        """
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
         o_s.write(stereo_data)
-        #sd.play(stereo_data*weight, 44100)
-        #sd.wait()
-        #play_obj.wait_done()
     else:
         device.contrast(0)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
-        _z = np.zeros((8820,2))
+        _z = np.zeros((fs*seconds,2))
         _z = _z.astype(np.float32)
         print('hi')
         print(_z.shape)
-        o_s.write(np.zeros((8820, 2)).astype(np.float32))
+        o_s.write(np.zeros((fs*seconds,2)).astype(np.float32))
             
     device.clear()
-
-    #play_obj = sa.play_buffer(audio, 1, 2, fs)
-    
-    #if GPIO.input(25):
-    #    device.contrast(2*16)
-    #    print('yes')
-    #else:
-    #    device.contrast(14*16)
-    #    print('no')
-    
-    #with canvas(device) as draw:
-    #    draw.rectangle(block, fill="red")
-
-    #play_obj.wait_done()
-    #device.clear()
