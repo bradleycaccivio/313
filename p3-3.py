@@ -36,7 +36,7 @@ try:
 finally:
     GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
 
-print("\n".join(measures))
+print(measures)
 
 
 p = pyaudio.PyAudio()
