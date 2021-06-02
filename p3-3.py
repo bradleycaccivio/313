@@ -210,12 +210,13 @@ while True:
         print(stereo_data.shape)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
+            draw.rectangle(block2, fill="red")
         o_s.write(stereo_data)
     else:
         device.contrast(0)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
-            draw.rectangle(block2, fill="red")
+            #draw.rectangle(block2, fill="red")
         _z = np.zeros((b_s,2))
         _z = _z.astype(np.float32)
         print('hi')
