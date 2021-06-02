@@ -35,8 +35,7 @@ hx.tare()
 
 while True:
     try:
-        val = hx.get_weight(5)
-        print(val)
+        print(getharm())
 
     except (KeyboardInterrupt, SystemExit):
         print('Cleaning...')
@@ -189,18 +188,18 @@ def readadc(adcnum):
 def getharm(f):
     val = hx.get_weight(1)
     print(val)
-    if val <= 5000:
-        return harmonics[f]["same"]
-    elif val <= 12000:
-        return harmonics[f]["min3"]
-    elif val <= 25000:
-        return harmonics[f]["maj3"]
-    elif val <= 37000:
-        return harmonics[f]["tritone"]
-    elif val <= 50000:
-        return harmonics[f]["perf5"]
+    if val <= 9000:
+        return "same"
+    elif val <= 18000:
+        return "min3"
+    elif val <= 36000:
+        return "maj3"
+    elif val <= 45000:
+        return "tritone"
+    elif val <= 56000:
+        return "perf5"
     else:
-        return harmonics[f]["min6"]
+        return "min6"
 
 device.clear()
 
@@ -304,7 +303,7 @@ while True:
     if not GPIO.input(25):
         device.contrast(p_c)
         #play_obj = sa.play_buffer(audio, 1, 2, fs)
-        frequency1 = getharm(frequency)
+        frequency1 = harmonics[frequency][getharm()]
         note = np.sin(frequency * t * 2 * np.pi)
         audio = note * (2**15 - 1) / np.max(np.abs(note))
         audio = audio.astype(np.int16)
