@@ -193,15 +193,15 @@ def readadc(adcnum):
 def getharm(f):
     val = hx.get_weight(1)
     print(val)
-    if val <= 0:
+    if val <= 5000:
         return harmonics[f]["same"]
-    elif val <= 2500:
+    elif val <= 12000:
         return harmonics[f]["min3"]
-    elif val <= 5000:
+    elif val <= 25000:
         return harmonics[f]["maj3"]
-    elif val <= 7500:
+    elif val <= 37000:
         return harmonics[f]["tritone"]
-    elif val <= 10000:
+    elif val <= 50000:
         return harmonics[f]["perf5"]
     else:
         return harmonics[f]["min6"]
@@ -297,7 +297,10 @@ while True:
     audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
     audio1 = audio1.astype(np.int16)
 
-    stereo_data = np.column_stack([audio, audio1])
+    if frequency == frequency1:
+        stereo_data = audio
+    else:
+        stereo_data = np.column_stack([audio, audio1])
     
     if not GPIO.input(25):
         device.contrast(p_c)
