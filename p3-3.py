@@ -7,6 +7,7 @@ from gpiozero import MCP3008
 from time import sleep
 import alsaaudio
 import math
+import sys
 
 import pyaudio
 
@@ -24,6 +25,25 @@ from hx711 import HX711
 import hx711py
 
 print('starting')
+
+hx = hx711py.hx711.HX711(5,6)
+
+hx.reset()
+hx.tare()
+
+while True:
+    try:
+        val = hx.get_weight(5)
+        print(val)
+
+        hx.power_down()
+        hx.power_up()
+        sleep(0.1)
+
+    except (KeyboardInterrupt, SystemExit):
+        print('Cleaning...')
+        GPIO.cleanup()
+        sys.exit()
 
 _time = 0
 while _time < 1000:
