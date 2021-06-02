@@ -172,7 +172,8 @@ weight = 1
 p_c = 0
 fs = 44100
 seconds = 0.2
-t = np.linspace(0, seconds, seconds * fs, False)
+b_s = int(fs*seconds)
+t = np.linspace(0, seconds, b_s, False)
 
 hx = HX711(5,6)
 
@@ -189,7 +190,7 @@ pot = MCP3008(0)
 serial = spi(port=0, device=0, gpio=noop())
 device = max7219(serial, cascaded=4, block_orientation=-90)
 
-o_s = sd.OutputStream(samplerate=fs, blocksize=fs*seconds, channels=2, dtype=np.float32)
+o_s = sd.OutputStream(samplerate=fs, blocksize=b_s, channels=2, dtype=np.float32)
 o_s.start()
 
 while True:
