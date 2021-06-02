@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from __future__ import division
-import simpleaudio as sa
 import numpy as np
 import spidev
 from gpiozero import MCP3008
