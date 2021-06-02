@@ -31,7 +31,7 @@ hx = HX711(5,6)
 hx.reset()
 hx.tare()
 
-def getharm(f):
+def getharm():
     val = hx.get_weight(1)
     print(val)
     if val <= 9000:
