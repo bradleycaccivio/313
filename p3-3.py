@@ -23,7 +23,7 @@ import sounddevice as sd
 p = pyaudio.PyAudio()
 volume = 0.5
 fs = 44100
-duration = 1.0
+duration = 10.0
 f1 = 261.63
 f2 = 329.63
 
