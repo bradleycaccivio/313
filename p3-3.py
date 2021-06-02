@@ -88,7 +88,6 @@ def getharm():
     else:
         return "same"
 
-"""
 while True:
     try:
         print(getharm())
@@ -99,7 +98,7 @@ while True:
         sys.exit()
 
 
-"""
+
 harmonics = {
     261.63: {
         "same": [261.63, [0, 4, 3, 7]],     # C
