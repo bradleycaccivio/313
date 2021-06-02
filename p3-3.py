@@ -21,6 +21,7 @@ import RPi.GPIO as GPIO
 import sounddevice as sd
 
 from hx711 import HX711
+import hx711py
 
 print('starting')
 
