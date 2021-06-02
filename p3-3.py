@@ -214,23 +214,23 @@ while True:
             stereo_data = np.column_stack([audio, audio1])
             print('yo')
             print(g_h)
-            device.clear()
+            #device.clear()
             with canvas(device) as draw:
                 draw.rectangle(block, fill="red")
                 draw.rectangle(block2, fill="red")
             o_s.write(stereo_data)
             sleep(seconds)
         else:
-            b2 = harmonics[frequency][getharm()][1]
-            device.clear()
+            #b2 = harmonics[frequency][getharm()][1]
+            #device.clear()
             device.contrast(0)
             with canvas(device) as draw:
                 draw.rectangle(block, fill="red")
-                draw.rectangle(b2, fill="red")
+                #draw.rectangle(b2, fill="red")
             sleep(seconds)
             #o_s.write(np.zeros((b_s,2)).astype(np.float32))
                 
-        #device.clear()
+        device.clear()
     except (KeyboardInterrupt, SystemExit):
         GPIO.cleanup()
         device.clear()
