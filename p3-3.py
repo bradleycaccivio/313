@@ -194,7 +194,7 @@ o_s.start()
 
 while True:
     try:
-        print(getharm())
+        #print(getharm())
         frequency, block = getfreq()
             
         weight, p_c = getvol()
