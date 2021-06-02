@@ -53,8 +53,8 @@ fsr = MCP3008(5)
 
 #m = alsaaudio.Mixer()
 weight = 1
-c_v = m.getvolume()
-print(c_v)
+#c_v = m.getvolume()
+#print(c_v)
 
 p_c = 0
 
