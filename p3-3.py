@@ -75,15 +75,15 @@ def getharm():
     val = hx.get_weight(1)
     print(val)
     hx.power_down()
-    if val <= 330000:
+    if val <= 2500:
         return "same"
-    elif val <= 350000:
+    elif val <= 3250:
         return "min3"
-    elif val <= 370000:
+    elif val <= 4000:
         return "maj3"
-    elif val <= 390000:
+    elif val <= 4750:
         return "tritone"
-    elif val <= 410000:
+    elif val <= 5500:
         return "perf5"
     else:
         return "min6"
