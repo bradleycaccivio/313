@@ -3,7 +3,7 @@ import numpy as np
 import spidev
 from gpiozero import MCP3008
 from time import sleep
-import math
+#import math
 import sys
 
 from luma.led_matrix.device import max7219
