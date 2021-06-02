@@ -31,6 +31,69 @@ hx = HX711(5,6)
 hx.reset()
 hx.tare()
 
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(25, GPIO.IN)
+
+fsr = MCP3008(5)
+pot = MCP3008(0)
+
+#o_s = sd.OutputStream(samplerate=44100, blocksize=8820, channels=2, dtype=np.float32, callback=callback)
+
+def getfreq():
+    if fsr.value <= 0.125:
+        frequency = 261.63
+        block = [0, 0, 3, 7]
+    elif fsr.value <= 0.25:
+        frequency = 293.66
+        block = [4, 0, 7, 7]
+    elif fsr.value <= 0.375:
+        frequency = 329.63
+        block = [8, 0, 11, 7]
+    elif fsr.value <= 0.5:
+        frequency = 349.23
+        block = [12, 0, 15, 7]
+    elif fsr.value <= 0.625:
+        frequency = 392.00
+        block = [16, 0, 19, 7]
+    elif fsr.value <= 0.75:
+        frequency = 440.00
+        block = [20, 0, 23, 7]
+    elif fsr.value <= 0.875:
+        frequency = 493.88
+        block = [24, 0, 27, 7]
+    else:
+        frequency = 523.25
+        block = [28, 0, 31, 7]
+    return frequency, block
+
+def getvol():
+    if pot.value <= 0.125:
+        weight = 0.2
+        p_c = 1 * 16
+    elif pot.value <= 0.25:
+        weight = 0.45
+        p_c = 3 * 16
+    elif pot.value <= 0.375:
+        weight = 0.7
+        p_c = 5 * 16
+    elif pot.value <= 0.5:
+        weight = 0.95
+        p_c = 7 * 16
+    elif pot.value <= 0.625:
+        weight = 1.2
+        p_c = 9 * 16
+    elif pot.value <= 0.75:
+        weight = 1.45
+        p_c = 11 * 16
+    elif pot.value <= 0.875:
+        weight = 1.70
+        p_c = 13 * 16
+    else:
+        weight = 1.95
+        p_c = 15 * 16
+    return weight, p_c
+
 def getharm():
     val = hx.get_weight(1)
     print(val)
@@ -46,6 +109,24 @@ def getharm():
         return "perf5"
     else:
         return "min6"
+"""
+def callback(outdata, frames, time, status):
+    if not GPIO.input(25):
+        seconds = 0.2
+        t = np.linspace(0, seconds, seconds * fs, False)
+        note = np.sin(frequency * t * 2 * np.pi)
+        audio = note * (2**15 - 1) / np.max(np.abs(note))
+        audio = audio.astype(np.float32)
+        frequency1 = harmonics[frequency][getharm()]
+        note1 = np.sin(frequency1 * t * 2 * np.pi)
+        audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
+        audio1 = audio1.astype(np.float32)
+        stereo_data = np.column_stack([audio, audio1])]
+        outdata[:] = stereo_data
+    else:
+        outdata.fill(0)
+"""
+
 """
 while True:
     try:
@@ -175,9 +256,6 @@ harmonics = {
         "min6": 830.61      # 8 semi
     }}
 
-pot = MCP3008(0)
-fsr = MCP3008(5)
-
 #m = alsaaudio.Mixer()
 weight = 1
 #c_v = m.getvolume()
@@ -187,10 +265,6 @@ p_c = 0
 
 serial = spi(port=0, device=0, gpio=noop())
 device = max7219(serial, cascaded=4, block_orientation=-90)
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(25, GPIO.IN)
 
 def readadc(adcnum):
     if adcnum > 7 or adcnum < 0:
@@ -202,79 +276,10 @@ def readadc(adcnum):
 device.clear()
 
 while True:
-    #if not GPIO.input(25):
-    #    device.contrast(2*16)
-    #    print('yes')
-    #else:
-    #    device.contrast(14*16)
-    #    print('no')
-    #print(pot.value)
-    #hx.power_down()
-    if fsr.value <= 0.125:
-        frequency = 261.63
-        #frequency1 = getharm(frequency)
-        block = [0, 0, 3, 7]
-    elif fsr.value <= 0.25:
-        frequency = 293.66
-        #frequency1 = getharm(frequency)
-        block = [4, 0, 7, 7]
-    elif fsr.value <= 0.375:
-        frequency = 329.63
-        #frequency1 = getharm(frequency)
-        block = [8, 0, 11, 7]
-    elif fsr.value <= 0.5:
-        frequency = 349.23
-        #frequency1 = getharm(frequency)
-        block = [12, 0, 15, 7]
-    elif fsr.value <= 0.625:
-        frequency = 392.00
-        #frequency1 = getharm(frequency)
-        block = [16, 0, 19, 7]
-    elif fsr.value <= 0.75:
-        frequency = 440.00
-        #frequency1 = getharm(frequency)
-        block = [20, 0, 23, 7]
-    elif fsr.value <= 0.875:
-        frequency = 493.88
-        #frequency1 = getharm(frequency)
-        block = [24, 0, 27, 7]
-    else:
-        frequency = 523.25
-        #frequency1 = getharm(frequency)
-        block = [28, 0, 31, 7]
+    frequency, block = getfreq()
         
-    if pot.value <= 0.125:
-        #m.setvolume(12)
-        weight = 0.2
-        p_c = 1 * 16
-    elif pot.value <= 0.25:
-        #m.setvolume(25)
-        weight = 0.45
-        p_c = 3 * 16
-    elif pot.value <= 0.375:
-        #m.setvolume(38)
-        weight = 0.7
-        p_c = 5 * 16
-    elif pot.value <= 0.5:
-        #m.setvolume(50)
-        weight = 0.95
-        p_c = 7 * 16
-    elif pot.value <= 0.625:
-        #m.setvolume(63)
-        weight = 1.2
-        p_c = 9 * 16
-    elif pot.value <= 0.75:
-        #m.setvolume(75)
-        weight = 1.45
-        p_c = 11 * 16
-    elif pot.value <= 0.875:
-        #m.setvolume(88)
-        weight = 1.70
-        p_c = 13 * 16
-    else:
-        #m.setvolume(100)
-        weight = 1.95
-        p_c = 15 * 16
+    weight, p_c = getvol()
+    
     fs = 44100
     seconds = 0.2
     #print(fsr.value)
