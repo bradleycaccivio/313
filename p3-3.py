@@ -20,33 +20,28 @@ import RPi.GPIO as GPIO
 
 import sounddevice as sd
 
-try:
-    from itertools import izip
-except ImportError: # Python 3
-    izip = zip
-    xrange = range
+p = PyAudio()
+volume = 0.5
+fs = 44100
+duration = 1.0
+f1 = 261.63
+f2 = 329.63
 
-def sine_tone(frequency, duration, volume=1, sample_rate=22050):
-    n_samples = int(sample_rate * duration)
-    restframes = n_samples % sample_rate
+samples1 = (np.sin(2*np.pi*np.arange(fs*duration)*f1/fs)).astype(np.float32)
+samples2 = (np.sin(2*np.pi*np.arange(fs*duration)*f2/fs)).astype(np.float32)
 
-    p = PyAudio()
-    stream = p.open(format=p.get_format_from_width(1), # 8bit
-                    channels=1, # mono
-                    rate=sample_rate,
-                    output=True)
-    s = lambda t: volume * math.sin(2 * math.pi * frequency * t / sample_rate)
-    samples = (int(s(t) * 0x7f + 0x80) for t in xrange(n_samples))
-    for buf in izip(*[samples]*sample_rate): # write several samples at a time
-        stream.write(bytes(bytearray(buf)))
+assert samples1.ndim == samples2.ndim
+s_d = np.column_stack([samples1, samples2])
 
-    # fill remainder of frameset with silence
-    stream.write(b'\x80' * restframes)
+stream = p.open(format=pyaudio.paFloat32,
+                channels=2,
+                rate=fs,
+                output=True)
 
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
-
+stream.write(volume*s_d)
+stream.stop_stream()
+stream.close()
+p.terminate()
 
 pot = MCP3008(0)
 fsr = MCP3008(5)
