@@ -37,14 +37,17 @@ s_d = np.column_stack([samples1, samples2])
 f_a = []
 
 for i,v in enumerate(samples1):
-    pass
+    f_a.append(v)
+    f_a.append(samples2[i])
+
+f_a = np.array(f_a)
 
 stream = p.open(format=pyaudio.paFloat32,
                 channels=2,
                 rate=fs,
                 output=True)
 
-stream.write(volume*s_d)
+stream.write(volume*f_a)
 stream.stop_stream()
 stream.close()
 p.terminate()
