@@ -88,6 +88,7 @@ def getharm():
     else:
         return "same"
 
+hx = HX711(5,6)
 while True:
     try:
         print(getharm())
