@@ -169,7 +169,7 @@ harmonics = {
 weight = 1
 p_c = 0
 fs = 44100
-seconds = 1
+seconds = 0.75
 b_s = int(fs*seconds)
 t = np.linspace(0, seconds, b_s, False)
 
