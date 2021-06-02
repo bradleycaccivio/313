@@ -209,7 +209,7 @@ def getharm(f):
         return harmonics[f]["min6"]
 
 device.clear()
-hw.power_down()
+hx.power_down()
 
 while True:
     #if not GPIO.input(25):
