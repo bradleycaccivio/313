@@ -226,7 +226,7 @@ while True:
             sleep(seconds)
             #o_s.write(np.zeros((b_s,2)).astype(np.float32))
                 
-        device.clear()
+        #device.clear()
     except (KeyboardInterrupt, SystemExit):
         GPIO.cleanup()
         sys.exit()
