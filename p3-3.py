@@ -100,7 +100,71 @@ stream.stop_stream()
 stream.close()
 p.terminate()
 """
-harmonics = {}
+harmonics = {
+    261.63: {
+        "same": 261.63,     # C
+        "maj3": 329.63,     # 4 semi
+        "min3": 311.13,     # 3 semi
+        "perf5": 392.00,    # 7 semi
+        "tritone": 369.99,  # 6 semi
+        "min6": 415.30      # 8 semi
+    },
+    293.66: {
+        "same": 293.66,     # D
+        "maj3": 369.99,     # 4 semi
+        "min3": 349.23,     # 3 semi
+        "perf5": 440.00,    # 7 semi
+        "tritone": 415.30,  # 6 semi
+        "min6": 466.16      # 8 semi
+    },
+    329.63: {
+        "same": 329.63,     # E
+        "maj3": 415.30,     # 4 semi
+        "min3": 392.00,     # 3 semi
+        "perf5": 493.88,    # 7 semi
+        "tritone": 466.16,  # 6 semi
+        "min6": 523.25      # 8 semi
+    },
+    349.23: {
+        "same": 349.23,     # F
+        "maj3": 440.00,     # 4 semi
+        "min3": 415.30,     # 3 semi
+        "perf5": 523.25,    # 7 semi
+        "tritone": 493.88,  # 6 semi
+        "min6": 554.37      # 8 semi
+    },
+    392.00: {
+        "same": 392.00,     # G
+        "maj3": 493.88,     # 4 semi
+        "min3": 466.16,     # 3 semi
+        "perf5": 587.33,    # 7 semi
+        "tritone": 554.37,  # 6 semi
+        "min6": 622.25      # 8 semi
+    },
+    440.00: {
+        "same": 440.00,     # A
+        "maj3": 554.37,     # 4 semi
+        "min3": 523.25,     # 3 semi
+        "perf5": 659.25,    # 7 semi
+        "tritone": 622.25,  # 6 semi
+        "min6": 698.46      # 8 semi
+    },
+    493.88: {
+        "same": 493.88,     # B
+        "maj3": 622.25,     # 4 semi
+        "min3": 587.33,     # 3 semi
+        "perf5": 739.99,    # 7 semi
+        "tritone": 698.46,  # 6 semi
+        "min6": 783.99      # 8 semi
+    },
+    523.25: {
+        "same": 523.25,     # C
+        "maj3": 659.25,     # 4 semi
+        "min3": 622.25,     # 3 semi
+        "perf5": 783.99,    # 7 semi
+        "tritone": 739.99,  # 6 semi
+        "min6": 830.61      # 8 semi
+    }}
 
 pot = MCP3008(0)
 fsr = MCP3008(5)
@@ -126,6 +190,21 @@ def readadc(adcnum):
     data = ((r[1] & 3) << 8) + r[2]
     return data
 
+def getharm(f):
+    val = hx.get_weight(5)
+    if val <= 0:
+        return harmonics[f]["same"]
+    elif val <= 2500:
+        return harmonics[f]["min3"]
+    elif val <= 5000:
+        return harmonics[f]["maj3"]
+    elif val <= 7500:
+        return harmonics[f]["tritone"]
+    elif val <= 10000:
+        return harmonics[f]["perf5"]
+    else:
+        return harmonics[f]["min6"]
+
 device.clear()
 
 while True:
@@ -138,34 +217,35 @@ while True:
     #print(pot.value)
     if fsr.value <= 0.125:
         frequency = 261.63
-        frequency1 = 261.63
+        frequency1 = getharm(frequency)
         block = [0, 0, 3, 7]
     elif fsr.value <= 0.25:
-        frequency = 294
-        frequency1 = 294
+        frequency = 293.66
+        frequency1 = getharm(frequency)
         block = [4, 0, 7, 7]
     elif fsr.value <= 0.375:
-        frequency = 330
-        frequency1 = 330
+        frequency = 329.63
+        frequency1 = getharm(frequency)
         block = [8, 0, 11, 7]
     elif fsr.value <= 0.5:
-        frequency = 349
-        frequency1 = 349
+        frequency = 349.23
+        frequency1 = getharm(frequency)
         block = [12, 0, 15, 7]
     elif fsr.value <= 0.625:
-        frequency = 392
-        frequency1 = 392
+        frequency = 392.00
+        frequency1 = getharm(frequency)
         block = [16, 0, 19, 7]
     elif fsr.value <= 0.75:
-        frequency = 440
-        frequency1 = 440
+        frequency = 440.00
+        frequency1 = getharm(frequency)
         block = [20, 0, 23, 7]
     elif fsr.value <= 0.875:
-        frequency = 494
-        frequency1 = 494
+        frequency = 493.88
+        frequency1 = getharm(frequency)
         block = [24, 0, 27, 7]
     else:
-        frequency = 523
+        frequency = 523.25
+        frequency1 = getharm(frequency)
         block = [28, 0, 31, 7]
         
     if pot.value <= 0.125:
