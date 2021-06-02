@@ -20,6 +20,25 @@ import RPi.GPIO as GPIO
 
 import sounddevice as sd
 
+from hx711 import HX711
+
+try:
+    hx711 = HX711(
+            dout_pin=27,
+            pd_sck_pin=17,
+            channel='A',
+            gain=64
+    )
+
+    hx711.reset()
+    measures = hx711.get_raw_data(num_measures=10)
+
+finally:
+    GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
+
+print("\n".join(measures))
+
+
 p = pyaudio.PyAudio()
 volume = 0.5
 fs = 44100
