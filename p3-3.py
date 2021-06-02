@@ -335,11 +335,11 @@ while True:
         device.contrast(0)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
-        _z = np.zeros((2,8820))
+        _z = np.zeros((8820,2))
         _z = _z.astype(np.float32)
         print('hi')
         print(_z.shape)
-        o_s.write(np.zeros((2,8820)).astype(np.float32))
+        o_s.write(np.zeros((8820, 2)).astype(np.float32))
             
     device.clear()
 
