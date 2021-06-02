@@ -43,11 +43,11 @@ for i,v in enumerate(samples1):
 f_a = np.array(f_a)
 
 stream = p.open(format=pyaudio.paFloat32,
-                channels=2,
+                channels=1,
                 rate=fs,
                 output=True)
 
-stream.write(volume*f_a)
+stream.write(volume*samples1)
 stream.stop_stream()
 stream.close()
 p.terminate()
