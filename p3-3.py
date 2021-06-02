@@ -6,6 +6,10 @@ import spidev
 from gpiozero import MCP3008
 from time import sleep
 import alsaaudio
+from __future__ import division
+import math
+
+from pyaudio import PyAudio
 
 from luma.led_matrix.device import max7219
 from luma.core.interface.serial import spi, noop
@@ -14,6 +18,36 @@ from luma.core.legacy import show_message
 from luma.core.legacy.font import proportional, LCD_FONT
 
 import RPi.GPIO as GPIO
+
+import sounddevice as sd
+
+try:
+    from itertools import izip
+except ImportError: # Python 3
+    izip = zip
+    xrange = range
+
+def sine_tone(frequency, duration, volume=1, sample_rate=22050):
+    n_samples = int(sample_rate * duration)
+    restframes = n_samples % sample_rate
+
+    p = PyAudio()
+    stream = p.open(format=p.get_format_from_width(1), # 8bit
+                    channels=1, # mono
+                    rate=sample_rate,
+                    output=True)
+    s = lambda t: volume * math.sin(2 * math.pi * frequency * t / sample_rate)
+    samples = (int(s(t) * 0x7f + 0x80) for t in xrange(n_samples))
+    for buf in izip(*[samples]*sample_rate): # write several samples at a time
+        stream.write(bytes(bytearray(buf)))
+
+    # fill remainder of frameset with silence
+    stream.write(b'\x80' * restframes)
+
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+
 
 pot = MCP3008(0)
 fsr = MCP3008(5)
@@ -50,24 +84,31 @@ while True:
     #print(pot.value)
     if fsr.value <= 0.125:
         frequency = 262
+        frequency1 = 330
         block = [0, 0, 3, 7]
     elif fsr.value <= 0.25:
         frequency = 294
+        frequency1 = 294
         block = [4, 0, 7, 7]
     elif fsr.value <= 0.375:
         frequency = 330
+        frequency1 = 330
         block = [8, 0, 11, 7]
     elif fsr.value <= 0.5:
         frequency = 349
+        frequency1 = 349
         block = [12, 0, 15, 7]
     elif fsr.value <= 0.625:
         frequency = 392
+        frequency1 = 392
         block = [16, 0, 19, 7]
     elif fsr.value <= 0.75:
         frequency = 440
+        frequency1 = 440
         block = [20, 0, 23, 7]
     elif fsr.value <= 0.875:
         frequency = 494
+        frequency1 = 494
         block = [24, 0, 27, 7]
     else:
         frequency = 523
@@ -106,16 +147,23 @@ while True:
     t = np.linspace(0, seconds, seconds * fs, False)
 
     note = np.sin(frequency * t * 2 * np.pi)
+    note1 = np.sin(frequency1 * t * 2 * np.pi)
 
     audio = note * (2**15 - 1) / np.max(np.abs(note))
     audio = audio.astype(np.int16)
+    audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
+    audio1 = audio1.astype(np.int16)
+
+    stereo_data = np.column_stack([audio, audio1])
     
     if not GPIO.input(25):
         device.contrast(p_c)
-        play_obj = sa.play_buffer(audio, 1, 2, fs)
+        #play_obj = sa.play_buffer(audio, 1, 2, fs)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
-        play_obj.wait_done()
+        sd.play(stereo_data, 44100)
+        sd.wait()
+        #play_obj.wait_done()
     else:
         device.contrast(0)
         with canvas(device) as draw:
