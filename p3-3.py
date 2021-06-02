@@ -31,7 +31,7 @@ try:
     )
 
     hx711.reset()
-    measures = hx711.get_raw_data(num_measures=10)
+    measures = hx711.get_raw_data()
 
 finally:
     GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
