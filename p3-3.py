@@ -191,8 +191,10 @@ def readadc(adcnum):
     return data
 
 def getharm(f):
+    hx.power_up()
     val = hx.get_weight(1)
     print(val)
+    hx.power_down()
     if val <= 5000:
         return harmonics[f]["same"]
     elif val <= 12000:
@@ -216,6 +218,7 @@ while True:
     #    device.contrast(14*16)
     #    print('no')
     #print(pot.value)
+    hx.power_down()
     if fsr.value <= 0.125:
         frequency = 261.63
         frequency1 = getharm(frequency)
