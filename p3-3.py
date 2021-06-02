@@ -21,6 +21,9 @@ import RPi.GPIO as GPIO
 import sounddevice as sd
 
 from hx711 import HX711
+
+print('starting')
+
 _time = 0
 while _time < 1000:
     try:
