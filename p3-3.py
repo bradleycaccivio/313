@@ -191,10 +191,8 @@ def readadc(adcnum):
     return data
 
 def getharm(f):
-    hx.power_up()
     val = hx.get_weight(1)
     print(val)
-    hx.power_down()
     if val <= 5000:
         return harmonics[f]["same"]
     elif val <= 12000:
@@ -209,7 +207,6 @@ def getharm(f):
         return harmonics[f]["min6"]
 
 device.clear()
-hx.power_down()
 
 while True:
     #if not GPIO.input(25):
