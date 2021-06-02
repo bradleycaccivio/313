@@ -83,8 +83,10 @@ def getharm():
         return "tritone"
     elif val <= 75000:
         return "perf5"
-    else:
+    elif val <= 120000:
         return "min6"
+    else:
+        return "same"
 
 """
 while True:
