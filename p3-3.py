@@ -38,7 +38,7 @@ GPIO.setup(25, GPIO.IN)
 fsr = MCP3008(5)
 pot = MCP3008(0)
 
-#o_s = sd.OutputStream(samplerate=44100, blocksize=8820, channels=2, dtype=np.float32, callback=callback)
+o_s = sd.OutputStream(samplerate=44100, blocksize=8820, channels=2, dtype=np.float32)
 
 def getfreq():
     if fsr.value <= 0.125:
@@ -310,8 +310,13 @@ while True:
         note = np.sin(frequency * t * 2 * np.pi)
         audio = note * (2**15 - 1) / np.max(np.abs(note))
         audio = audio.astype(np.float32)
+        note1 = np.sin(frequency1 * t * 2 * np.pi)
+        audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
+        audio1 = audio1.astype(np.float32)
+        stereo_data = np.column_stack([audio, audio1])
         print('yo')
-        print(audio.size)
+        print(stereo_data.shape)
+        """
         if frequency != frequency1:
             note1 = np.sin(frequency1 * t * 2 * np.pi)
             audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
@@ -319,16 +324,18 @@ while True:
             stereo_data = np.column_stack([audio, audio1])
         else:
             stereo_data = audio
-        note = np.sin(frequency * t * 2 * np.pi)
+        """
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
-        sd.play(stereo_data*weight, 44100)
-        sd.wait()
+        o_s.write(stereo_data)
+        #sd.play(stereo_data*weight, 44100)
+        #sd.wait()
         #play_obj.wait_done()
     else:
         device.contrast(0)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
+        o_s.write(np.zeros(2,8820))
             
     device.clear()
 
