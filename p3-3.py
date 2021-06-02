@@ -31,6 +31,8 @@ hx = HX711(5,6)
 hx.reset()
 hx.tare()
 
+"""
+
 while True:
     try:
         val = hx.get_weight(5)
@@ -97,6 +99,8 @@ stream.write(volume*samples1)
 stream.stop_stream()
 stream.close()
 p.terminate()
+"""
+harmonics = {}
 
 pot = MCP3008(0)
 fsr = MCP3008(5)
