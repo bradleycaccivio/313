@@ -150,7 +150,7 @@ while True:
     seconds = 0.2
     #print(fsr.value)
     #print(pot.value)
-    print(m.getvolume())
+    #print(m.getvolume())
 
     t = np.linspace(0, seconds, seconds * fs, False)
 
