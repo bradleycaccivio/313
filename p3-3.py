@@ -21,8 +21,8 @@ import RPi.GPIO as GPIO
 import sounddevice as sd
 
 from hx711 import HX711
-
-while True:
+_time = 0
+while _time < 1000:
     try:
         hx711 = HX711(
                 dout_pin=27,
@@ -32,13 +32,14 @@ while True:
         )
 
         hx711.reset()
-        measures = hx711.get_raw_data()
+        measures = hx711._read()
 
     finally:
         GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
 
     print('hi')
     print(measures)
+    _time = _time + 1
 
 
 p = pyaudio.PyAudio()
