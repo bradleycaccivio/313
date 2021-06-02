@@ -8,7 +8,7 @@ from time import sleep
 import alsaaudio
 import math
 
-from pyaudio import PyAudio
+import pyaudio
 
 from luma.led_matrix.device import max7219
 from luma.core.interface.serial import spi, noop
@@ -20,7 +20,7 @@ import RPi.GPIO as GPIO
 
 import sounddevice as sd
 
-p = PyAudio()
+p = pyaudio.PyAudio()
 volume = 0.5
 fs = 44100
 duration = 1.0
