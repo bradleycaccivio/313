@@ -137,8 +137,8 @@ while True:
     #    print('no')
     #print(pot.value)
     if fsr.value <= 0.125:
-        frequency = 262
-        frequency1 = 330
+        frequency = 261.63
+        frequency1 = 261.63
         block = [0, 0, 3, 7]
     elif fsr.value <= 0.25:
         frequency = 294
