@@ -3,17 +3,12 @@ import numpy as np
 import spidev
 from gpiozero import MCP3008
 from time import sleep
-#import math
 import sys
-
 from luma.led_matrix.device import max7219
 from luma.core.interface.serial import spi, noop
 from luma.core.render import canvas
-
 import RPi.GPIO as GPIO
-
 import sounddevice as sd
-
 from hx711 import HX711
 
 def getfreq():
@@ -87,30 +82,18 @@ def getharm():
         return "perf5"
     else:
         return "min6"
-"""
-hx = HX711(5,6)
-while True:
-    try:
-        print(getharm())
-
-    except (KeyboardInterrupt, SystemExit):
-        print('Cleaning...')
-        GPIO.cleanup()
-        sys.exit()
-"""
-
 
 harmonics = {
     261.63: {
-        "same": [261.63, [0, 4, 3, 7]],     # C
-        "maj3": [329.63, [8, 4, 11, 7]],     # 4 semi
-        "min3": [311.13, [6, 4, 9, 7]],     # 3 semi
+        "same": [261.63, [0, 4, 3, 7]],       # C
+        "maj3": [329.63, [8, 4, 11, 7]],      # 4 semi
+        "min3": [311.13, [6, 4, 9, 7]],       # 3 semi
         "perf5": [392.00, [16, 4, 19, 7]],    # 7 semi
         "tritone": [369.99, [14, 4, 17, 7]],  # 6 semi
         "min6": [415.30, [18, 4, 21, 7]]      # 8 semi
     },
     293.66: {
-        "same": [293.66, [4, 4, 7, 7]],     # D
+        "same": [293.66, [4, 4, 7, 7]],       # D
         "maj3": [369.99, [14, 4, 17, 7]],     # 4 semi
         "min3": [349.23, [12, 4, 15, 7]],     # 3 semi
         "perf5": [440.00, [20, 4, 23, 7]],    # 7 semi
@@ -118,7 +101,7 @@ harmonics = {
         "min6": [466.16, [22, 4, 25, 7]]      # 8 semi
     },
     329.63: {
-        "same": [329.63, [8, 4, 11, 7]],     # E
+        "same": [329.63, [8, 4, 11, 7]],      # E
         "maj3": [415.30, [18, 4, 21, 7]],     # 4 semi
         "min3": [392.00, [16, 4, 19, 7]],     # 3 semi
         "perf5": [493.88, [24, 4, 27, 7]],    # 7 semi
@@ -131,36 +114,36 @@ harmonics = {
         "min3": [415.30, [18, 4, 21, 7]],     # 3 semi
         "perf5": [523.25, [28, 4, 31, 7]],    # 7 semi
         "tritone": [493.88, [24, 4, 27, 7]],  # 6 semi
-        "min6": [554.37, [2, 4, 5, 7]]      # 8 semi
+        "min6": [554.37, [2, 4, 5, 7]]        # 8 semi
     },
     392.00: {
         "same": [392.00, [16, 4, 19, 7]],     # G
         "maj3": [493.88, [24, 4, 27, 7]],     # 4 semi
         "min3": [466.16, [22, 4, 25, 7]],     # 3 semi
-        "perf5": [587.33, [4, 4, 7, 7]],    # 7 semi
-        "tritone": [554.37, [2, 4, 5, 7]],  # 6 semi
-        "min6": [622.25, [6, 4, 9, 7]]      # 8 semi
+        "perf5": [587.33, [4, 4, 7, 7]],      # 7 semi
+        "tritone": [554.37, [2, 4, 5, 7]],    # 6 semi
+        "min6": [622.25, [6, 4, 9, 7]]        # 8 semi
     },
     440.00: {
         "same": [440.00, [20, 4, 23, 7]],     # A
-        "maj3": [554.37, [2, 4, 5, 7]],     # 4 semi
+        "maj3": [554.37, [2, 4, 5, 7]],       # 4 semi
         "min3": [523.25, [28, 4, 31, 7]],     # 3 semi
-        "perf5": [659.25, [8, 4, 11, 7]],    # 7 semi
-        "tritone": [622.25, [6, 4, 9, 7]],  # 6 semi
+        "perf5": [659.25, [8, 4, 11, 7]],     # 7 semi
+        "tritone": [622.25, [6, 4, 9, 7]],    # 6 semi
         "min6": [698.46, [12, 4, 15, 7]]      # 8 semi
     },
     493.88: {
         "same": [493.88, [24, 4, 27, 7]],     # B
-        "maj3": [622.25, [6, 4, 9, 7]],     # 4 semi
-        "min3": [587.33, [4, 4, 7, 7]],     # 3 semi
+        "maj3": [622.25, [6, 4, 9, 7]],       # 4 semi
+        "min3": [587.33, [4, 4, 7, 7]],       # 3 semi
         "perf5": [739.99, [14, 4, 17, 7]],    # 7 semi
         "tritone": [698.46, [12, 4, 15, 7]],  # 6 semi
         "min6": [783.99, [16, 4, 19, 7]]      # 8 semi
     },
     523.25: {
         "same": [523.25, [28, 4, 31, 7]],     # C
-        "maj3": [659.25, [8, 4, 11, 7]],     # 4 semi
-        "min3": [622.25, [6, 4, 9, 7]],     # 3 semi
+        "maj3": [659.25, [8, 4, 11, 7]],      # 4 semi
+        "min3": [622.25, [6, 4, 9, 7]],       # 3 semi
         "perf5": [783.99, [16, 4, 19, 7]],    # 7 semi
         "tritone": [739.99, [14, 4, 17, 7]],  # 6 semi
         "min6": [830.61, [18, 4, 21, 7]]      # 8 semi
@@ -195,7 +178,6 @@ o_s.start()
 device.clear()
 while True:
     try:
-        #print(getharm())
         frequency, block = getfreq()
             
         weight, p_c = getvol()
@@ -212,22 +194,15 @@ while True:
             audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
             audio1 = audio1.astype(np.float32)
             stereo_data = np.column_stack([audio, audio1])
-            print('yo')
-            print(g_h)
-            #device.clear()
             with canvas(device) as draw:
                 draw.rectangle(block, fill="red")
                 draw.rectangle(block2, fill="red")
             o_s.write(stereo_data)
             sleep(seconds)
         else:
-            #b2 = harmonics[frequency][getharm()][1]
-            #device.clear()
             device.contrast(0)
             with canvas(device) as draw:
                 draw.rectangle(block, fill="red")
-                #draw.rectangle(b2, fill="red")
-            #o_s.write(np.zeros((b_s,2)).astype(np.float32))
                 
         device.clear()
     except (KeyboardInterrupt, SystemExit):
