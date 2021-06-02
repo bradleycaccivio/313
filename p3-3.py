@@ -192,6 +192,7 @@ device = max7219(serial, cascaded=4, block_orientation=-90)
 o_s = sd.OutputStream(samplerate=fs, blocksize=b_s, channels=2, dtype=np.float32)
 o_s.start()
 
+device.clear()
 while True:
     try:
         #print(getharm())
@@ -229,4 +230,5 @@ while True:
         #device.clear()
     except (KeyboardInterrupt, SystemExit):
         GPIO.cleanup()
+        device.clear()
         sys.exit()
