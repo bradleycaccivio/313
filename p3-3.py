@@ -28,8 +28,8 @@ _time = 0
 while _time < 1000:
     try:
         hx711 = HX711(
-                dout_pin=5,
-                pd_sck_pin=6,
+                dout_pin=27,
+                pd_sck_pin=17,
                 channel='A',
                 gain=64
         )
