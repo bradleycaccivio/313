@@ -31,7 +31,13 @@ samples1 = (np.sin(2*np.pi*np.arange(fs*duration)*f1/fs)).astype(np.float32)
 samples2 = (np.sin(2*np.pi*np.arange(fs*duration)*f2/fs)).astype(np.float32)
 
 assert samples1.ndim == samples2.ndim
+assert samples1.size == samples2.size
 s_d = np.column_stack([samples1, samples2])
+
+f_a = []
+
+for i,v in enumerate(samples1):
+    pass
 
 stream = p.open(format=pyaudio.paFloat32,
                 channels=2,
