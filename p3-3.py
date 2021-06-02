@@ -5,23 +5,16 @@ import numpy as np
 import spidev
 from gpiozero import MCP3008
 from time import sleep
-import alsaaudio
 import math
-import sys
-
-import pyaudio
 
 from luma.led_matrix.device import max7219
 from luma.core.interface.serial import spi, noop
 from luma.core.render import canvas
-from luma.core.legacy import show_message
-from luma.core.legacy.font import proportional, LCD_FONT
 
 import RPi.GPIO as GPIO
 
 import sounddevice as sd
 
-#from hx711 import HX711
 from hx711 import HX711
 
 print('starting')
