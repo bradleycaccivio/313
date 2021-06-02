@@ -27,7 +27,6 @@ from hx711 import HX711
 print('starting')
 
 hx = HX711(5,6)
-hx.set_gain(64)
 
 hx.reset()
 hx.tare()
