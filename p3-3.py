@@ -207,7 +207,7 @@ while True:
         audio1 = audio1.astype(np.float32)
         stereo_data = np.column_stack([audio, audio1])
         print('yo')
-        print(stereo_data.shape)
+        print(g_h)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
             draw.rectangle(block2, fill="red")
