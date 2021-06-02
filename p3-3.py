@@ -160,7 +160,7 @@ while True:
         #play_obj = sa.play_buffer(audio, 1, 2, fs)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
-        sd.play(stereo_data, 44100, mapping=[0,1])
+        sd.play(stereo_data, 44100, mapping=[1,2])
         sd.wait()
         #play_obj.wait_done()
     else:
