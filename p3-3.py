@@ -190,32 +190,36 @@ o_s = sd.OutputStream(samplerate=fs, blocksize=b_s, channels=2, dtype=np.float32
 o_s.start()
 
 while True:
-    frequency, block = getfreq()
-        
-    weight, p_c = getvol()
-    
-    if not GPIO.input(25):
-        device.contrast(p_c)
-        g_h = getharm()
-        frequency1 = harmonics[frequency][g_h][0]
-        block2 = harmonics[frequency][g_h][1]
-        note = np.sin(frequency * t * 2 * np.pi)
-        audio = note * (2**15 - 1) / np.max(np.abs(note))
-        audio = audio.astype(np.float32)
-        note1 = np.sin(frequency1 * t * 2 * np.pi)
-        audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
-        audio1 = audio1.astype(np.float32)
-        stereo_data = np.column_stack([audio, audio1])
-        print('yo')
-        print(g_h)
-        with canvas(device) as draw:
-            draw.rectangle(block, fill="red")
-            draw.rectangle(block2, fill="red")
-        o_s.write(stereo_data)
-    else:
-        device.contrast(0)
-        with canvas(device) as draw:
-            draw.rectangle(block, fill="red")
-        o_s.write(np.zeros((b_s,2)).astype(np.float32))
+    try:
+        frequency, block = getfreq()
             
-    device.clear()
+        weight, p_c = getvol()
+        
+        if not GPIO.input(25):
+            device.contrast(p_c)
+            g_h = getharm()
+            frequency1 = harmonics[frequency][g_h][0]
+            block2 = harmonics[frequency][g_h][1]
+            note = np.sin(frequency * t * 2 * np.pi)
+            audio = note * (2**15 - 1) / np.max(np.abs(note))
+            audio = audio.astype(np.float32)
+            note1 = np.sin(frequency1 * t * 2 * np.pi)
+            audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
+            audio1 = audio1.astype(np.float32)
+            stereo_data = np.column_stack([audio, audio1])
+            print('yo')
+            print(g_h)
+            with canvas(device) as draw:
+                draw.rectangle(block, fill="red")
+                draw.rectangle(block2, fill="red")
+            o_s.write(stereo_data)
+        else:
+            device.contrast(0)
+            with canvas(device) as draw:
+                draw.rectangle(block, fill="red")
+            o_s.write(np.zeros((b_s,2)).astype(np.float32))
+                
+        device.clear()
+    except (KeyboardInterrupt, SystemExit):
+        GPIO.cleanup()
+        sys.exit()
