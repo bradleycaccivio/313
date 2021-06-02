@@ -31,7 +31,21 @@ hx = HX711(5,6)
 hx.reset()
 hx.tare()
 
-
+def getharm(f):
+    val = hx.get_weight(1)
+    print(val)
+    if val <= 9000:
+        return "same"
+    elif val <= 18000:
+        return "min3"
+    elif val <= 36000:
+        return "maj3"
+    elif val <= 45000:
+        return "tritone"
+    elif val <= 56000:
+        return "perf5"
+    else:
+        return "min6"
 
 while True:
     try:
@@ -184,22 +198,6 @@ def readadc(adcnum):
     r = spi_d.xfer2([1, 8 + adcnum << 4, 0])
     data = ((r[1] & 3) << 8) + r[2]
     return data
-
-def getharm(f):
-    val = hx.get_weight(1)
-    print(val)
-    if val <= 9000:
-        return "same"
-    elif val <= 18000:
-        return "min3"
-    elif val <= 36000:
-        return "maj3"
-    elif val <= 45000:
-        return "tritone"
-    elif val <= 56000:
-        return "perf5"
-    else:
-        return "min6"
 
 device.clear()
 
