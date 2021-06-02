@@ -217,6 +217,7 @@ while True:
                 draw.rectangle(block, fill="red")
                 draw.rectangle(block2, fill="red")
             o_s.write(stereo_data)
+            sleep(seconds)
         else:
             device.contrast(0)
             with canvas(device) as draw:
