@@ -276,7 +276,7 @@ while True:
         weight = 1.95
         p_c = 15 * 16
     fs = 44100
-    seconds = 1.5
+    seconds = 0.2
     #print(fsr.value)
     #print(pot.value)
     #print(m.getvolume())
@@ -305,6 +305,8 @@ while True:
         note = np.sin(frequency * t * 2 * np.pi)
         audio = note * (2**15 - 1) / np.max(np.abs(note))
         audio = audio.astype(np.float32)
+        print('yo')
+        print(audio.size)
         if frequency != frequency1:
             note1 = np.sin(frequency1 * t * 2 * np.pi)
             audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
