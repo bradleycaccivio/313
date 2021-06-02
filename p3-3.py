@@ -85,7 +85,7 @@ def getharm():
         return "perf5"
     else:
         return "min6"
-
+"""
 hx = HX711(5,6)
 while True:
     try:
@@ -95,7 +95,7 @@ while True:
         print('Cleaning...')
         GPIO.cleanup()
         sys.exit()
-
+"""
 
 
 harmonics = {
