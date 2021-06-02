@@ -175,6 +175,8 @@ hx = HX711(5,6)
 
 hx.reset()
 hx.tare()
+hx.power_down()
+hx.power_up()
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
