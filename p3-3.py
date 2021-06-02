@@ -21,12 +21,12 @@ import RPi.GPIO as GPIO
 
 import sounddevice as sd
 
+#from hx711 import HX711
 from hx711 import HX711
-import hx711py
 
 print('starting')
 
-hx = hx711py.HX711(5,6)
+hx = HX711(5,6)
 
 hx.reset()
 hx.tare()
