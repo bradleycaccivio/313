@@ -68,7 +68,6 @@ def getvol():
 def getharm():
     hx.power_up()
     val = hx.get_weight(1)
-    print(val)
     hx.power_down()
     if val <= 16000:
         return "same"
