@@ -282,7 +282,7 @@ while True:
         weight = 1.95
         p_c = 15 * 16
     fs = 44100
-    seconds = 0.2
+    seconds = 1.5
     #print(fsr.value)
     #print(pot.value)
     #print(m.getvolume())
