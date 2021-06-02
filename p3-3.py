@@ -22,21 +22,23 @@ import sounddevice as sd
 
 from hx711 import HX711
 
-try:
-    hx711 = HX711(
-            dout_pin=27,
-            pd_sck_pin=17,
-            channel='A',
-            gain=64
-    )
+while True:
+    try:
+        hx711 = HX711(
+                dout_pin=27,
+                pd_sck_pin=17,
+                channel='A',
+                gain=64
+        )
 
-    hx711.reset()
-    measures = hx711.get_raw_data(readings=100)
+        hx711.reset()
+        measures = hx711.get_raw_data(readings=100)
 
-finally:
-    GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
+    finally:
+        GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
 
-print(measures)
+    print('hi')
+    print(measures)
 
 
 p = pyaudio.PyAudio()
