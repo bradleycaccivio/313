@@ -16,32 +16,28 @@ import sounddevice as sd
 
 from hx711 import HX711
 
-print('starting')
-
-
-
 def getfreq():
     if fsr.value <= 0.125:
         frequency = 261.63
-        block = [0, 0, 3, 7]
+        block = [0, 0, 3, 3]
     elif fsr.value <= 0.25:
         frequency = 293.66
-        block = [4, 0, 7, 7]
+        block = [4, 0, 7, 3]
     elif fsr.value <= 0.375:
         frequency = 329.63
-        block = [8, 0, 11, 7]
+        block = [8, 0, 11, 3]
     elif fsr.value <= 0.5:
         frequency = 349.23
-        block = [12, 0, 15, 7]
+        block = [12, 0, 15, 3]
     elif fsr.value <= 0.625:
         frequency = 392.00
-        block = [16, 0, 19, 7]
+        block = [16, 0, 19, 3]
     elif fsr.value <= 0.75:
         frequency = 440.00
-        block = [20, 0, 23, 7]
+        block = [20, 0, 23, 3]
     elif fsr.value <= 0.875:
         frequency = 493.88
-        block = [24, 0, 27, 7]
+        block = [24, 0, 27, 3]
     else:
         frequency = 523.25
         block = [28, 0, 31, 7]
@@ -77,15 +73,15 @@ def getvol():
 def getharm():
     val = hx.get_weight(1)
     print(val)
-    if val <= 12000:
+    if val <= 17000:
         return "same"
-    elif val <= 24000:
+    elif val <= 34000:
         return "min3"
-    elif val <= 36000:
+    elif val <= 51000:
         return "maj3"
-    elif val <= 48000:
+    elif val <= 58000:
         return "tritone"
-    elif val <= 60000:
+    elif val <= 75000:
         return "perf5"
     else:
         return "min6"
@@ -104,68 +100,68 @@ while True:
 """
 harmonics = {
     261.63: {
-        "same": 261.63,     # C
-        "maj3": 329.63,     # 4 semi
-        "min3": 311.13,     # 3 semi
-        "perf5": 392.00,    # 7 semi
-        "tritone": 369.99,  # 6 semi
-        "min6": 415.30      # 8 semi
+        "same": [261.63, [0, 4, 3, 7]],     # C
+        "maj3": [329.63, [8, 4, 11, 7]],     # 4 semi
+        "min3": [311.13, [6, 4, 9, 7]],     # 3 semi
+        "perf5": [392.00, [16, 4, 19, 7]],    # 7 semi
+        "tritone": [369.99, [14, 4, 17, 7]],  # 6 semi
+        "min6": [415.30, [18, 4, 21, 7]]      # 8 semi
     },
     293.66: {
-        "same": 293.66,     # D
-        "maj3": 369.99,     # 4 semi
-        "min3": 349.23,     # 3 semi
-        "perf5": 440.00,    # 7 semi
-        "tritone": 415.30,  # 6 semi
-        "min6": 466.16      # 8 semi
+        "same": [293.66, [4, 4, 7, 7]],     # D
+        "maj3": [369.99, [14, 4, 17, 7]],     # 4 semi
+        "min3": [349.23, [12, 4, 15, 7]],     # 3 semi
+        "perf5": [440.00, [20, 4, 23, 7]],    # 7 semi
+        "tritone": [415.30, [18, 4, 21, 7]],  # 6 semi
+        "min6": [466.16, [22, 4, 25, 7]]      # 8 semi
     },
     329.63: {
-        "same": 329.63,     # E
-        "maj3": 415.30,     # 4 semi
-        "min3": 392.00,     # 3 semi
-        "perf5": 493.88,    # 7 semi
-        "tritone": 466.16,  # 6 semi
-        "min6": 523.25      # 8 semi
+        "same": [329.63, [8, 4, 11, 7]],     # E
+        "maj3": [415.30, [18, 4, 21, 7]],     # 4 semi
+        "min3": [392.00, [16, 4, 19, 7]],     # 3 semi
+        "perf5": [493.88, [24, 4, 27, 7]],    # 7 semi
+        "tritone": [466.16, [22, 4, 25, 7]],  # 6 semi
+        "min6": [523.25, [0, 4, 3, 7]]      # 8 semi
     },
     349.23: {
-        "same": 349.23,     # F
-        "maj3": 440.00,     # 4 semi
-        "min3": 415.30,     # 3 semi
-        "perf5": 523.25,    # 7 semi
-        "tritone": 493.88,  # 6 semi
-        "min6": 554.37      # 8 semi
+        "same": [349.23, [12, 4, 15, 7]],     # F
+        "maj3": [440.00, [20, 4, 23, 7]],     # 4 semi
+        "min3": [415.30, [18, 4, 21, 7]],     # 3 semi
+        "perf5": [523.25, [0, 4, 3, 7]],    # 7 semi
+        "tritone": [493.88, [24, 4, 27, 7]],  # 6 semi
+        "min6": [554.37, [2, 4, 5, 7]]      # 8 semi
     },
     392.00: {
-        "same": 392.00,     # G
-        "maj3": 493.88,     # 4 semi
-        "min3": 466.16,     # 3 semi
-        "perf5": 587.33,    # 7 semi
-        "tritone": 554.37,  # 6 semi
-        "min6": 622.25      # 8 semi
+        "same": [392.00, [16, 4, 19, 7]],     # G
+        "maj3": [493.88, [24, 4, 27, 7]],     # 4 semi
+        "min3": [466.16, [22, 4, 25, 7]],     # 3 semi
+        "perf5": [587.33, [4, 4, 7, 7]],    # 7 semi
+        "tritone": [554.37, [2, 4, 5, 7]],  # 6 semi
+        "min6": [622.25, [6, 4, 9, 7]]      # 8 semi
     },
     440.00: {
-        "same": 440.00,     # A
-        "maj3": 554.37,     # 4 semi
-        "min3": 523.25,     # 3 semi
-        "perf5": 659.25,    # 7 semi
-        "tritone": 622.25,  # 6 semi
-        "min6": 698.46      # 8 semi
+        "same": [440.00, [20, 4, 23, 7]],     # A
+        "maj3": [554.37, [2, 4, 5, 7]],     # 4 semi
+        "min3": [523.25, [0, 4, 3, 7]],     # 3 semi
+        "perf5": [659.25, [8, 4, 11, 7]],    # 7 semi
+        "tritone": [622.25, [6, 4, 9, 7]],  # 6 semi
+        "min6": [698.46, [12, 4, 15, 7]]      # 8 semi
     },
     493.88: {
-        "same": 493.88,     # B
+        "same": [493.88, [24, 4, 27, 7]],     # B
         "maj3": 622.25,     # 4 semi
-        "min3": 587.33,     # 3 semi
+        "min3": [587.33, [4, 4, 7, 7]],     # 3 semi
         "perf5": 739.99,    # 7 semi
-        "tritone": 698.46,  # 6 semi
+        "tritone": [698.46, [12, 4, 15, 7]],  # 6 semi
         "min6": 783.99      # 8 semi
     },
     523.25: {
-        "same": 523.25,     # C
-        "maj3": 659.25,     # 4 semi
-        "min3": 622.25,     # 3 semi
-        "perf5": 783.99,    # 7 semi
-        "tritone": 739.99,  # 6 semi
-        "min6": 830.61      # 8 semi
+        "same": [523.25, [0, 4, 3, 7]],     # C
+        "maj3": [659.25, [8, 4, 11, 7]],     # 4 semi
+        "min3": [622.25, [6, 4, 9, 7]],     # 3 semi
+        "perf5": [783.99, [16, 4, 19, 7]],    # 7 semi
+        "tritone": [739.99, [14, 4, 17, 7]],  # 6 semi
+        "min6": [830.61, [18, 4, 21, 7]]      # 8 semi
     }}
 
 weight = 1
@@ -200,7 +196,9 @@ while True:
     
     if not GPIO.input(25):
         device.contrast(p_c)
-        frequency1 = harmonics[frequency][getharm()]
+        g_h = getharm()
+        frequency1 = harmonics[frequency][g_h][0]
+        block2 = harmonics[frequency][g_h][1]
         note = np.sin(frequency * t * 2 * np.pi)
         audio = note * (2**15 - 1) / np.max(np.abs(note))
         audio = audio.astype(np.float32)
@@ -217,6 +215,7 @@ while True:
         device.contrast(0)
         with canvas(device) as draw:
             draw.rectangle(block, fill="red")
+            draw.rectangle(block2, fill="red")
         _z = np.zeros((b_s,2))
         _z = _z.astype(np.float32)
         print('hi')
