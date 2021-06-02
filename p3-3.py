@@ -71,8 +71,10 @@ def getvol():
     return weight, p_c
 
 def getharm():
+    hx.power_up()
     val = hx.get_weight(1)
     print(val)
+    hx.power_down()
     if val <= 330000:
         return "same"
     elif val <= 350000:
@@ -176,7 +178,6 @@ hx = HX711(5,6)
 hx.reset()
 hx.tare()
 hx.power_down()
-hx.power_up()
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
