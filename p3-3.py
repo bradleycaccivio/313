@@ -304,11 +304,11 @@ while True:
         frequency1 = harmonics[frequency][getharm()]
         note = np.sin(frequency * t * 2 * np.pi)
         audio = note * (2**15 - 1) / np.max(np.abs(note))
-        audio = audio.astype(np.int16)
+        audio = audio.astype(np.float32)
         if frequency != frequency1:
             note1 = np.sin(frequency1 * t * 2 * np.pi)
             audio1 = note1 * (2**15 - 1) / np.max(np.abs(note))
-            audio1 = audio1.astype(np.int16)
+            audio1 = audio1.astype(np.float32)
             stereo_data = np.column_stack([audio, audio1])
         else:
             stereo_data = audio
