@@ -32,7 +32,7 @@ while True:
         )
 
         hx711.reset()
-        measures = hx711.get_raw_data(readings=100)
+        measures = hx711.get_raw_data()
 
     finally:
         GPIO.cleanup()  # always do a GPIO cleanup in your scripts!
